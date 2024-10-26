@@ -5,7 +5,7 @@
 #include <stdlib.h>
 
 typedef struct _person* position;
-typedef struct person
+typedef struct _person
 {
     char fname[32], lname[32];
     int birth_year;
@@ -17,14 +17,17 @@ position create_person(char* fname, char* lname, int birt_year);
 int prepend_list(position head, char* fname, char* lname, int birth_year);
 int append_list(position head, char* fname, char* lname, int birth_year);
 int insert_after(position previous, position to_);
-int print_list(position first);
+void print_list(position first);
 position find_last(position head);
 position find_by_lname(position first, char* lname);
-position find_previous();
+//position find_previous();
 
 int main()
 {
-    person head = {.fname = "",.lname = "",.birth_year = 0};
+    person head = {"","",0, NULL};
+    prepend_list(&head, "Leo", "Pavlovic", 1998);
+    prepend_list(&head, "Lucija", "Pavlovic", 1998);
+    print_list(head.next);
 }
 
 position create_person(char* fname, char* lname, int birth_year)
@@ -54,7 +57,7 @@ int prepend_list(position head, char* fname, char* lname, int birth_year)
     if (!new_person)
         return -1;
 
-    new_person = head->next;
+    new_person->next = head->next;
     head->next = new_person;
 
     return EXIT_SUCCESS;
@@ -76,11 +79,11 @@ int append_list(position head, char* fname, char* lname, int birth_year)
 
 }
 
-int print_list(position first)
+void print_list(position first)
 {
     position temp = first;
 
-    while (temp)
+    while(temp)
     {
         printf("First name: %s\nLast name: %s\nBirth year: %d\n", temp->fname, temp->lname, temp->birth_year);
         temp = temp->next;
@@ -101,7 +104,8 @@ position find_last(position head)
 
 int insert_after(position previous, position to_)
 {
-
+    to_->next = previous->next;
+    previous->next = to_;
 }
 
 position find_by_lname(position first, char* lname)
