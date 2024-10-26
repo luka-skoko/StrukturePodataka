@@ -25,9 +25,17 @@ position find_by_lname(position first, char* lname);
 int main()
 {
     person head = {"","",0, NULL};
+    person *searchedName;
+
     prepend_list(&head, "Leo", "Pavlovic", 1998);
-    prepend_list(&head, "Lucija", "Pavlovic", 1998);
+    prepend_list(&head, "Lucija", "Pavlic", 1998);
+    append_list(&head, "Marko", "Bulic", 2006);
+    prepend_list(&head, "Ante", "Baric", 2001);
+    append_list(&head, "Mate", "Matic", 1980);
     print_list(head.next);
+
+    searchedName = find_by_lname(head.next, "Pavlovic");
+    printf("Trazena osoba: %s %s\n", searchedName->fname, searchedName->lname);
 }
 
 position create_person(char* fname, char* lname, int birth_year)
@@ -85,7 +93,7 @@ void print_list(position first)
 
     while(temp)
     {
-        printf("First name: %s\nLast name: %s\nBirth year: %d\n", temp->fname, temp->lname, temp->birth_year);
+        printf("First name: %s\nLast name: %s\nBirth year: %d\n\n", temp->fname, temp->lname, temp->birth_year);
         temp = temp->next;
     }
 }
