@@ -34,7 +34,54 @@ int sort_list(position first);
 int main()
 {
     person head = {"","",0, NULL};
-    position searchedName, previous; 
+    char fname[32], lname[32];
+    int birth_year;
+    int odabir;
+    printf("Odaberi koju funkciju zelis:\n");
+    printf("0 - zatvori izbornik");
+    printf("1 - dinamicki dodaje novi element na pocetak liste\n");
+    printf("2 - ispisuje listu\n");
+    printf("3 - dinamicki dodaje novi element na kraj liste\n");
+    printf("4 - pronalazi element u listi(po prezimenu)\n");
+    printf("5 - brise odredjeni element iz liste\n");
+    printf("6 - dinamicki dodaje novi element iza odreðenog elementa\n");
+    printf("7 - dinamicki dodaje novi element ispred odredjenog elementa\n");
+    printf("8 - sortira listu po prezimenima osoba\n");
+    printf("9 - upisuje listu u datoteku\n");
+    printf("10 - cita listu iz datoteke\n");
+
+    do {
+        printf("\nOdaberi koju funkciju zelis:\n");
+        scanf("%d", &odabir);
+        switch (odabir)
+        {
+            case 0:
+                break;
+            case 1:
+                printf("\nUnesi ime, prezime i datum rodjenja osobe koju zelis dodati:\n");
+                scanf("%s", fname);
+                scanf("%s", lname);
+                scanf("%d", &birth_year);
+                prepend_list(&head, fname, lname, birth_year);
+                break;
+            case 2:
+                print_list(head.next);
+                break;
+            case 3:
+                printf("\nUnesi ime, prezime i datum rodjenja osobe koju zelis dodati:\n");
+                scanf("%s", fname);
+                scanf("%s", lname);
+                scanf("%d", &birth_year);
+                append_list(&head, fname, lname, birth_year);
+                break;
+            case 4:
+                printf("Unesi prezime osobe koju trazis:\n");
+                scanf("%s", lname);
+        }
+
+    } while (odabir != 0);
+        
+    /*position searchedName, previous;
 
     prepend_list(&head, "Leo", "Pavlovic", 1998);
     prepend_list(&head, "Lucija", "Pavlic", 1998);
@@ -43,11 +90,6 @@ int main()
     append_list(&head, "Mate", "Matic", 1980);
     print_list(head.next);
 
-    /*searchedName = find_by_lname(head.next, "Pavlovic");
-    printf("Trazena osoba: %s %s\n", searchedName->fname, searchedName->lname);
-
-    previous = find_previous(head.next, "Pavlovic");
-    printf("Prethodnik: %s %s\n\n", previous->fname, previous->lname);*/
     printf("\n");
     erase_person(head.next, "Pavlovic");
 
@@ -60,7 +102,8 @@ int main()
 
     write_in_file(head.next);
     read_from_file("lista.txt");
-    print_list(head.next);
+    printf("\nProcitano iz filea:\n");
+    print_list(head.next);*/
 }
 
 position create_person(char* fname, char* lname, int birth_year)
@@ -119,7 +162,8 @@ void print_list(position first)
 
     while(temp)
     {
-        printf("First name: %s\nLast name: %s\nBirth year: %d\n\n", temp->fname, temp->lname, temp->birth_year);
+        //printf("First name: %s\nLast name: %s\nBirth year: %d\n\n", temp->fname, temp->lname, temp->birth_year);
+        printf("%s %s %d\n", temp->fname, temp->lname, temp->birth_year);
         temp = temp->next;
     }
 }
@@ -238,7 +282,7 @@ int read_from_file(char* filename)
 {
     FILE* fp = NULL;
     person new_head = { "","",0, NULL };
-    char* buffer = "", current_fname, current_lname;
+    char current_fname[32], current_lname[32];
     int current_birth_year;
 
     fp = fopen(filename, "r");
@@ -249,12 +293,12 @@ int read_from_file(char* filename)
         return ERROR_WHILE_OPENING_FILE;
     }
 
-    while (!feof(fp))
+    while (fscanf(fp, "%s %s %d", current_fname, current_lname, &current_birth_year) == 3)
     {
-        fscanf(fp, "%s", buffer);
-        sscanf(buffer, "%s %s %d", current_fname, current_lname, &current_birth_year);
         append_list(&new_head, current_fname, current_lname, current_birth_year);
     }
+
+    fclose(fp);
 }
 
 // Run program: Ctrl + F5 or Debug > Start Without Debugging menu
