@@ -1,24 +1,16 @@
-First name: Ante
-Last name: Baric
-Birth year: 2001
+First name: Ana
+Last name: Anic
+Birth year: 2000
+
+First name: Stipe
+Last name: Perkusic
+Birth year: 2007
 
 First name: Luka
-Last name: Barisic
-Birth year: 2002
+Last name: Lukic
+Birth year: 2000
 
-First name: Jure
-Last name: Matkovic
-Birth year: 1997
-
-First name: Lucija
-Last name: Pavlic
-Birth year: 1998
-
-First name: Marko
-Last name: Bulic
-Birth year: 2006
-
-First name: Mate
-Last name: Matic
+First name: Mario
+Last name: Marinovic
 Birth year: 1980
 
