@@ -6,6 +6,7 @@
 #include <stdlib.h>
 
 #define MAX_LINE_SIZE 1024
+#define ERROR_WHILE_OPENING_FILE 1
 
 typedef struct _polynom* position;
 typedef struct _polynom
@@ -19,14 +20,22 @@ position CreatePolynom(position head, int coefficient, int exponent);
 int InsertSorted(position head, position newElement);
 int InsertAfter(position current, position newElement);
 int DeleteAfter(position current);
-position FindPrevious(position first, position current);
-int ReadFromFile(char* filename);
+void PrintPolynom(position head);
+int ReadFromFile(position head1, position head2, char* filename);
+int ReadLine(position head, char* line);
 int AddPolynoms(position P1, position P2, position result);
 int MultiplyPolynoms(position P1, position P2, position result);
 
 
 int main()
 {
+    polynom head1 = { 0, 0, NULL }, head2 = { 0, 0, NULL };
+    ReadFromFile(&head1, &head2, "polinomi.txt");
+
+    PrintPolynom(&head1);
+    PrintPolynom(&head2);
+
+
     //treba osloboditi memoriju
 }
 
@@ -34,7 +43,7 @@ position CreatePolynom(position head, int coefficient, int exponent)
 {
     position newPolynom = NULL;
 
-    newPolynom = (position*)malloc(sizeof(polynom));
+    newPolynom = (position)malloc(sizeof(polynom));
 
     if (!newPolynom)
     {
@@ -68,7 +77,7 @@ int InsertSorted(position head, position newElement)
 
         if (resultCoefficient == 0)
         {
-            DeleteAfter(head, temp);
+            DeleteAfter(temp);
             free(newElement);
         }
         else
@@ -87,46 +96,61 @@ int InsertAfter(position current, position newElement)
     return EXIT_SUCCESS;
 }
 
-int DeleteAfter(position head, position current)
+int DeleteAfter(position current)
 {
-    position previous = FindPrevious(head->next, current);
-    position temp = previous->next;
-
-    previous->next = previous->next->next;
+    position temp = current->next;
+    current->next = current->next->next;
     free(temp);
 }
 
-position FindPrevious(position first, position current)
+void PrintPolynom(position head)
 {
-    position temp = first;
+    position temp = head;
 
-    while (temp->next)
+    while (temp)
     {
-        if (temp->next == current)
-            return temp;
+        printf("%dx^%d", temp->coefficient, temp->exponent);
+        if (temp->next)
+            printf(" + ");
         temp = temp->next;
     }
-
-    return NULL;
 }
 
-int ReadFromFile(char* filename)
+
+int ReadFromFile(position head1, position head2, char* filename)
 {
     char buffer[MAX_LINE_SIZE];
-    FILE* fp;
-    int status;
-    //status treba biti 2
-    int coefficient, exponent, numberOfBytes;
+    FILE* fp = NULL;
+    position newElement;
 
     fp = fopen(filename, "r");
+    if (fp == NULL)
+    {
+        printf("Error while opening file!");
+        return ERROR_WHILE_OPENING_FILE;
+    }
 
     fgets(buffer, MAX_LINE_SIZE, fp);
+    ReadLine(head1, buffer);
+    fgets(buffer, MAX_LINE_SIZE, fp);
+    ReadLine(head2, buffer);
 
-    while (strlen(buffer) > 0)
+    fclose(fp);
+}
+
+int ReadLine(position head, char* line)
+{
+    int coefficient, exponent, numberOfBytes;
+    char* linePosition = line;
+    position newElement;
+
+    while (strlen(line) > 0)
     {
-        status = sscanf(buffer, "%d %d %n", &coefficient, &exponent, &numberOfBytes);
+        sscanf(line, " %d %d%n", &coefficient, &exponent, &numberOfBytes);
+        newElement = CreatePolynom(head, coefficient, exponent);
+        InsertSorted(head, newElement);
+        linePosition += numberOfBytes;
     }
-    buffer += numberOfBytes;
 }
 
 // Run program: Ctrl + F5 or Debug > Start Without Debugging menu
