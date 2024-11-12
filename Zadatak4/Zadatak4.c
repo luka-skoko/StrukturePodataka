@@ -145,7 +145,7 @@ int DeleteAfter(position current)
 
 void PrintPolynom(position head)
 {
-    position temp = head;
+    position temp = head->next;
 
     while (temp)
     {
@@ -167,7 +167,7 @@ void LoadPolynom(position head, const char* line)
     {
         newElement = CreatePolynom(head, coefficient, exponent);
         InsertSorted(head, newElement);
-        //for (int i = 0; i < 2; i++)
+        for (int i = 0; i < 2; i++)
         {
             while (*ptr != ' ' && *ptr != '\0') ptr++;
             while (*ptr == ' ') ptr++;
