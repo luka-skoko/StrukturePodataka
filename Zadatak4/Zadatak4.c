@@ -21,22 +21,62 @@ int InsertSorted(position head, position newElement);
 int InsertAfter(position current, position newElement);
 int DeleteAfter(position current);
 void PrintPolynom(position head);
-int ReadFromFile(position head1, position head2, char* filename);
-int ReadLine(position head, char* line);
-int AddPolynoms(position P1, position P2, position result);
-int MultiplyPolynoms(position P1, position P2, position result);
+void LoadPolynom(position head, const char* line);
+position SumPolynoms(position poly1, position poly2);
+position MultiplyPolynoms(position poly1, position poly2);
+void FreePolynom(position head);
 
 
 int main()
 {
-    polynom head1 = { 0, 0, NULL }, head2 = { 0, 0, NULL };
-    ReadFromFile(&head1, &head2, "polinomi.txt");
+    FILE* file = fopen("polinomi.txt", "r");
+    if (file == NULL) 
+    {
+        perror("Error opening file");
+        return 1;
+    }
+    
+    char line1[256], line2[256];
+    if (fgets(line1, sizeof(line1), file) == NULL || fgets(line2, sizeof(line2), file) == NULL) 
+    {
+        perror("Error reading lines");
+        fclose(file);
+        return 1;
+    }
+    
+    position poly1 = (position)malloc(sizeof(polynom)); 
+    poly1->next = NULL;
 
-    PrintPolynom(&head1);
-    PrintPolynom(&head2);
+    position poly2 = (position)malloc(sizeof(polynom)); 
+    poly2->next = NULL;
+    
+
+    LoadPolynom(poly1, line1);
+    LoadPolynom(poly2, line2);
+    
+    fclose(file);
+
+    printf("Polynom 1: \n");
+    PrintPolynom(poly1);
+    printf("Polynom 2: \n");
+    PrintPolynom(poly2);
+
+    printf("Polynoms sum: \n");
+    position polySum = SumPolynoms(poly1, poly2);
+    PrintPolynom(polySum);
+
+    printf("Polynoms product: \n");
+    position polyProduct = MultiplyPolynoms(poly1, poly2);
+    PrintPolynom(polyProduct);
 
 
-    //treba osloboditi memoriju
+    //oslobodi memoriju
+    FreePolynom(poly1);
+    FreePolynom(poly2);
+    FreePolynom(polySum);
+    FreePolynom(polyProduct);
+
+    return 0;
 }
 
 position CreatePolynom(position head, int coefficient, int exponent)
@@ -114,42 +154,120 @@ void PrintPolynom(position head)
             printf(" + ");
         temp = temp->next;
     }
+    printf("\n\n");
 }
 
 
-int ReadFromFile(position head1, position head2, char* filename)
+void LoadPolynom(position head, const char* line) 
 {
-    char buffer[MAX_LINE_SIZE];
-    FILE* fp = NULL;
-    position newElement;
-
-    fp = fopen(filename, "r");
-    if (fp == NULL)
+    int coefficient, exponent;
+    const char* ptr = line;
+    position newElement = NULL;
+    while (sscanf(ptr, "%d %d", &coefficient, &exponent) == 2) 
     {
-        printf("Error while opening file!");
-        return ERROR_WHILE_OPENING_FILE;
-    }
-
-    fgets(buffer, MAX_LINE_SIZE, fp);
-    ReadLine(head1, buffer);
-    fgets(buffer, MAX_LINE_SIZE, fp);
-    ReadLine(head2, buffer);
-
-    fclose(fp);
-}
-
-int ReadLine(position head, char* line)
-{
-    int coefficient, exponent, numberOfBytes;
-    char* linePosition = line;
-    position newElement;
-
-    while (strlen(line) > 0)
-    {
-        sscanf(line, " %d %d%n", &coefficient, &exponent, &numberOfBytes);
         newElement = CreatePolynom(head, coefficient, exponent);
         InsertSorted(head, newElement);
-        linePosition += numberOfBytes;
+        //for (int i = 0; i < 2; i++)
+        {
+            while (*ptr != ' ' && *ptr != '\0') ptr++;
+            while (*ptr == ' ') ptr++;
+        }
+
+    }
+}
+
+position SumPolynoms(position poly1, position poly2) 
+{
+    position result = (position)malloc(sizeof(polynom));
+    result->next = NULL;
+    position temp1 = poly1->next;
+    position temp2 = poly2->next;
+    position newElement = NULL;
+
+
+    while (temp1 != NULL && temp2 != NULL) 
+    {
+        if (temp1->exponent == temp2->exponent) 
+        {
+            newElement = CreatePolynom(result, temp1->coefficient + temp2->coefficient, temp1->exponent);
+            InsertSorted(result, newElement);
+            temp1 = temp1->next;
+            temp2 = temp2->next;
+        }
+        else if (temp1->exponent > temp2->exponent) 
+        {
+            newElement = CreatePolynom(result, temp1->coefficient, temp1->exponent);
+            InsertSorted(result, newElement);
+            temp1 = temp1->next;
+        }
+        else 
+        {
+            newElement = CreatePolynom(result, temp2->coefficient, temp2->exponent);
+            InsertSorted(result, newElement);
+            temp2 = temp2->next;
+        }
+    }
+
+    while (temp1 != NULL) 
+    {
+        newElement = CreatePolynom(result, temp1->coefficient, temp1->exponent);
+        InsertSorted(result, newElement);
+        temp1 = temp1->next;
+    }
+
+    while (temp2 != NULL) 
+    {
+        newElement = CreatePolynom(result, temp2->coefficient, temp2->exponent);
+        InsertSorted(result, newElement);
+        temp2 = temp2->next;
+    }
+
+    return result;
+}
+
+position MultiplyPolynoms(position poly1, position poly2) 
+{
+    position result = (position)malloc(sizeof(polynom));
+    result->next = NULL;
+
+    for (position temp1 = poly1->next; temp1 != NULL; temp1 = temp1->next) 
+    {
+        for (position temp2 = poly2->next; temp2 != NULL; temp2 = temp2->next) 
+        {
+            int newCoefficient = temp1->coefficient * temp2->coefficient;
+            int newExponent = temp1->exponent + temp2->exponent;
+
+            position tempResult = result;
+            while (tempResult->next != NULL && tempResult->next->exponent > newExponent) 
+            {
+                tempResult = tempResult->next;
+            }
+
+            if (tempResult->next != NULL && tempResult->next->exponent == newExponent) 
+            {
+                tempResult->next->coefficient += newCoefficient;
+            }
+            else 
+            {
+                position newNode = (position)malloc(sizeof(polynom));
+                newNode->coefficient = newCoefficient;
+                newNode->exponent = newExponent;
+                newNode->next = tempResult->next;
+                tempResult->next = newNode;
+            }
+        }
+    }
+
+    return result;
+}
+
+void FreePolynom(position head) 
+{
+    position temp;
+    while (head != NULL) {
+        temp = head;
+        head = head->next;
+        free(temp);
     }
 }
 
