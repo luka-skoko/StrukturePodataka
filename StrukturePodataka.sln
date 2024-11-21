@@ -9,8 +9,6 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Zadatak1", "Zadatak1\Zadata
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Zadatak4", "Zadatak4\Zadatak4.vcxproj", "{06027C8F-B88F-43A8-916D-9293A271474F}"
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "VjezbaZaKolokvijStrukture", "..\..\source\repos\VjezbaZaKolokvijStrukture\VjezbaZaKolokvijStrukture\VjezbaZaKolokvijStrukture.vcxproj", "{17A687DD-7159-4593-9A9D-F95CDFD53325}"
-EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|x64 = Debug|x64
@@ -43,14 +41,6 @@ Global
 		{06027C8F-B88F-43A8-916D-9293A271474F}.Release|x64.Build.0 = Release|x64
 		{06027C8F-B88F-43A8-916D-9293A271474F}.Release|x86.ActiveCfg = Release|Win32
 		{06027C8F-B88F-43A8-916D-9293A271474F}.Release|x86.Build.0 = Release|Win32
-		{17A687DD-7159-4593-9A9D-F95CDFD53325}.Debug|x64.ActiveCfg = Debug|x64
-		{17A687DD-7159-4593-9A9D-F95CDFD53325}.Debug|x64.Build.0 = Debug|x64
-		{17A687DD-7159-4593-9A9D-F95CDFD53325}.Debug|x86.ActiveCfg = Debug|Win32
-		{17A687DD-7159-4593-9A9D-F95CDFD53325}.Debug|x86.Build.0 = Debug|Win32
-		{17A687DD-7159-4593-9A9D-F95CDFD53325}.Release|x64.ActiveCfg = Release|x64
-		{17A687DD-7159-4593-9A9D-F95CDFD53325}.Release|x64.Build.0 = Release|x64
-		{17A687DD-7159-4593-9A9D-F95CDFD53325}.Release|x86.ActiveCfg = Release|Win32
-		{17A687DD-7159-4593-9A9D-F95CDFD53325}.Release|x86.Build.0 = Release|Win32
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
