@@ -3,61 +3,118 @@
 
 #include <stdio.h>
 #include <stdlib.h>
+#include <ctype.h>
+#include <string.h>
 
-typedef struct _stack* position;
-typedef struct _stack
+#define ERROR -1
+
+typedef struct _node* position;
+typedef struct _node
 {
     int value;
     position next;
-}stack;
+}node;
 
-position CreateStack(position head, int value);
 int PushElement(position head, int element);
 int PopElement(position head);
-int EvaluatePostfix(char* postfix);
+int PrintStack(position head);
+int EvaluatePostfix(position head, char* postfix);
 
 int main()
 {
-    
-}
+    position stackHead = (position)malloc(sizeof(node));
+    stackHead->next = NULL;
 
-position CreateStack(position head, int value)
-{
-    position newElement = NULL;
+    FILE* fp = NULL;
+    fp = fopen("postfix.txt", "r");
 
-    newElement = (position)malloc(sizeof(stack));
-
-    if (!newElement)
+    if (fp == NULL)
     {
-        printf("Malloc failed in function CreateElement!");
-        return NULL;
+        printf("Nije moguce otvoriti file!\n");
+        return ERROR;
     }
 
-    newElement->value = value;
-    newElement->next = NULL;
+    //int result = EvaluatePostfix(stackHead, fp);
+    char postfix[] = "8 3 + 4 2 * +";
+    int result = EvaluatePostfix(stackHead, postfix);
+    printf("Rjesenje je: %d", result);
 
-    return newElement;
+    fclose(fp);
+    free(stackHead);
+
+    return 0;
+        
 }
 
-int PushElement(position head, int element)
+int PushElement(position head, int value)
 {
-    position temp = head->next;
+    position temp = (position)malloc(sizeof(node));
 
-    temp->value = element;
-    temp->next = head->next->next;
+    temp->value = value;
+    temp->next = head->next;
     head->next = temp;
+
+    return EXIT_SUCCESS;
 }
 
 int PopElement(position head)
 {
+    int valueToReturn = head->next->value;
     position temp = head->next;
     head->next = temp->next;
-    return(temp->value);
+    free(temp);
+    return(valueToReturn);
 }
 
-int EvaluatePostfix(char* postfix)
+int PrintStack(position head)
 {
-    position newStack = CreateStack()
+    while (head->next)
+    {
+        printf("%d ", head->next->value);
+        head = head->next;
+    }
+    printf("\n");
+
+    return 0;
+}
+
+int EvaluatePostfix(position head, char* postfix)
+{
+    char* token = strtok(postfix, " ");
+
+    while (token != NULL)
+    {
+        if (isdigit(token[0]))
+            PushElement(head, atoi(token));
+        else
+        {
+            int b = PopElement(head);
+            int a = PopElement(head);
+
+            switch (token[0])
+            {
+                case '+':
+                    PushElement(head, a + b);
+                    break;
+                case '-':
+                    PushElement(head, a - b);
+                    break;
+                case '*':
+                    PushElement(head, a * b);
+                    break;
+                case '/':
+                    PushElement(head, a / b);
+                    break;
+                default: 
+                    fprintf(stderr, "Invalid operator: %c\n", token[0]); 
+                    return EXIT_FAILURE;
+            }
+            token = strtok(NULL, " ");
+
+        }
+    }
+
+    return PopElement(head);
 }
 
 // Run program: Ctrl + F5 or Debug > Start Without Debugging menu
