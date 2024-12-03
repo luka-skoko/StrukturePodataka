@@ -34,16 +34,25 @@ int main()
         return ERROR;
     }
 
-    //int result = EvaluatePostfix(stackHead, fp);
-    char postfix[] = "8 3 + 4 2 * +";
-    int result = EvaluatePostfix(stackHead, postfix);
+    char line[256];
+    if (fgets(line, sizeof(line), fp) == NULL)
+    {
+        perror("Error reading lines");
+        fclose(fp);
+        return 1;
+    }
+
+
+    int result = EvaluatePostfix(stackHead, line);
+    //char* postfix = "8 3 + 4 2 * +";
+    //int result = EvaluatePostfix(stackHead, postfix);
     printf("Rjesenje je: %d", result);
 
     fclose(fp);
     free(stackHead);
 
     return 0;
-        
+
 }
 
 int PushElement(position head, int value)
@@ -78,40 +87,56 @@ int PrintStack(position head)
     return 0;
 }
 
-int EvaluatePostfix(position head, char* postfix)
+int EvaluatePostfix(position head, const char* postfix)
 {
-    char* token = strtok(postfix, " ");
+    const char* ptr = postfix;
+    char buffer[16];
+    int bufferIndex = 0;
 
-    while (token != NULL)
+    while (*ptr != '\0')
     {
-        if (isdigit(token[0]))
-            PushElement(head, atoi(token));
+        if (isdigit(*ptr))
+        {
+            buffer[bufferIndex] = *ptr;
+            bufferIndex++;
+            ptr++;
+            if (!isdigit(*ptr))
+            {
+                buffer[bufferIndex] = '\0';
+                bufferIndex++;
+                PushElement(head, atoi(buffer));
+                bufferIndex = 0;
+            }
+        }
+        else if (*ptr == ' ')
+            ptr++;
         else
         {
             int b = PopElement(head);
             int a = PopElement(head);
 
-            switch (token[0])
+            switch (*ptr)
             {
-                case '+':
-                    PushElement(head, a + b);
-                    break;
-                case '-':
-                    PushElement(head, a - b);
-                    break;
-                case '*':
-                    PushElement(head, a * b);
-                    break;
-                case '/':
-                    PushElement(head, a / b);
-                    break;
-                default: 
-                    fprintf(stderr, "Invalid operator: %c\n", token[0]); 
-                    return EXIT_FAILURE;
+            case '+':
+                PushElement(head, a + b);
+                break;
+            case '-':
+                PushElement(head, a - b);
+                break;
+            case '*':
+                PushElement(head, a * b);
+                break;
+            case '/':
+                PushElement(head, a / b);
+                break;
+            default:
+                fprintf(stderr, "Invalid operator: %c\n", *ptr);
+                return EXIT_FAILURE;
             }
-            token = strtok(NULL, " ");
 
+            ptr++;
         }
+
     }
 
     return PopElement(head);
