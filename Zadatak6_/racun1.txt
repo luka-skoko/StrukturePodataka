@@ -1,0 +1,6 @@
+2024-12-9
+kruh 1 1.2
+banana 5 0.4
+kava 1 5.5
+papir 1 6.8
+jabuka 6 0.33

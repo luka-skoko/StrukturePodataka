@@ -1,0 +1,8 @@
+2024-12-4
+jabuka 8 0.33
+kruh 1 1.2
+sok 3 2.2
+mlijeko 4 2.5
+jabuka 2 0.33
+banana 3 0.4
+banana 5 0.4

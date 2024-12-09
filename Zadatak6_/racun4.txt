@@ -1,0 +1,7 @@
+2024-11-10
+voda 2 0.75
+tost 2 5
+mandarina 10 0.3
+sir 1 5.8
+kruh 2 1.2
+voda 4 0.75
