@@ -282,7 +282,7 @@ ArticlePosition CreateArticle(char* name, int quantity, float price)
     ArticlePosition new = NULL;
     new = (ArticlePosition)malloc(sizeof(Article));
     if (new == NULL) {
-        printf("Nije bilo mjesta u memoriji za novi racun.\n");
+        printf("Nije bilo mjesta u memoriji za novi artikal.\n");
         return NULL;
     }
     strcpy(new->name, name);
