@@ -158,12 +158,14 @@ int PrintDateTime(DateTime d)
 ReceiptPosition CreateReceipt(DateTime d) 
 {
     ReceiptPosition newReceipt = NULL;
+    
     newReceipt = (ReceiptPosition)malloc(sizeof(Receipt));
     if (newReceipt == NULL)
     {
         printf("Nije bilo mjesta u memoriji za novi racun.\n");
         return NULL;
     }
+    
     newReceipt->date = d;
     newReceipt->next = NULL;
     newReceipt->ArticleHead = NULL_ARTICLE;
