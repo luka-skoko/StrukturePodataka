@@ -215,7 +215,6 @@ int SortedInputReceipt(ReceiptPosition head, ReceiptPosition new)
 {
     ReceiptPosition temp = NULL;
     temp = head;
-    int OnHead = 1;
     while (temp->next) 
     {
         if (CompareDates(temp->date, new->date) == DATE_SAME) {
